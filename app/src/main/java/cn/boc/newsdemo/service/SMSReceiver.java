@@ -41,10 +41,17 @@ public class SMSReceiver extends BroadcastReceiver{
                 String smsMsg = smsMessages[0].getMessageBody();
 
                 if(smsMsg != null){
-                    Intent smsIntent = new Intent();
-                    intent.setAction(LoginActivity.MESSAGE_RECEIVER);
 
-                    smsIntent.putExtra("sms_content",smsMsg);
+//
+//                    Intent it = new Intent();
+//                    it.setAction(LoginActivity.MESSAGE_ACTION);
+//                    it.putExtra("code", smsMsg);
+//                    context.sendBroadcast(it);
+
+                    Intent smsIntent = new Intent();
+                    smsIntent.setAction(LoginActivity.MESSAGE_ACTION);
+
+                    smsIntent.putExtra("code",smsMsg);
 
                     context.sendBroadcast(smsIntent);
                 }
