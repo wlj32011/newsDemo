@@ -2,6 +2,9 @@
 <manifest package="cn.boc.newsdemo"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,6 +22,15 @@
         </activity>
         <activity android:name=".activity.LoginActivity">
         </activity>
+
+        <receiver android:name=".service.SMSReceiver">
+            <intent-filter>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"></action>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".activity.LoginActivity$MyReceiver"/>
+
     </application>
 
 </manifest>
