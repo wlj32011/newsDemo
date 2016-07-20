@@ -1,17 +1,42 @@
 package cn.boc.newsdemo.activity;
 
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.URLConnection;
+
+import cn.boc.newsdemo.NewsApi;
 import cn.boc.newsdemo.R;
 import cn.boc.newsdemo.TimeCount;
+import cn.boc.newsdemo.User;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static cn.boc.newsdemo.R.string.login;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -26,6 +51,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     TimeCount timeCount;
+
+
+    public static final String LOGIN_URL = "http://192.168.43.116:3000/";
 
 
 
@@ -64,11 +92,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
-
-
-
-
-
 
 
         getCodeButton.setOnClickListener(this);
@@ -112,6 +135,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.loginButton:
+                MyHttpTask myHttpTask = new MyHttpTask();
+                String username = phoneEditText.getText().toString();
+                String password = codeEditText.getText().toString();
+//                myHttpTask.execute(LOGIN_URL,username,password);
+
+                login(username,password);
 
                 break;
             case R.id.getCodeButton:
@@ -126,18 +155,126 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-//    public class MyCodeReceiver extends BroadcastReceiver{
-//
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//
-//            Log.e("MyCodeReceiver", "MyCodeReceiver");
-//            if(intent.getAction().equals(MESSAGE_RECEIVER)){
-//                String smsMsg = intent.getStringExtra("sms_content");
-//                if(smsMsg != null){
-//                    codeEditText.setText(smsMsg);
-//                }
-//            }
+
+    private void login(String username,String password){
+        Retrofit retrofit = new Retrofit.Builder()
+                .addConverterFactory(GsonConverterFactory.create())
+                .baseUrl(LOGIN_URL).build();
+
+        NewsApi newsApi = retrofit.create(NewsApi.class);
+
+        Call<User> userCall = newsApi.login(username,password);
+
+        userCall.enqueue(new Callback<User>() {
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                Log.d("LoginActivity", "response.body():" + response.body());
+
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
+
+
+            }
+
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+
+            }
+        });
+
+//        try {
+//            Response<User> user = userCall.execute();
+//            return user.body();
+//        } catch (IOException e) {
+//            e.printStackTrace();
 //        }
-//    }
+    }
+
+
+    class MyHttpTask extends AsyncTask<String,Integer,User>{
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected User doInBackground(String... strings) {
+
+            String url = strings[0];
+            String username = strings[1];
+            String password = strings[2];
+            Retrofit retrofit = new Retrofit.Builder()
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .baseUrl(url).build();
+
+            NewsApi newsApi = retrofit.create(NewsApi.class);
+
+            Call<User> userCall = newsApi.login(username,password);
+
+            try {
+                Response<User> user = userCall.execute();
+                return user.body();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+//            String url = strings[0];
+//
+//
+//            HttpClient httpClient = new DefaultHttpClient();
+//
+//            HttpGet httpGet = new HttpGet(url);
+//
+//            HttpResponse httpResponse = null;
+//
+//            String result = "请求错误";
+//
+//            try {
+//                httpResponse = httpClient.execute(httpGet);
+//                if(httpResponse.getStatusLine().getStatusCode() == 200){
+//                    result = EntityUtils.toString(httpResponse.getEntity()) ;
+//                }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(User user) {
+            super.onPostExecute(user);
+
+
+
+
+//            Gson gson = new Gson();
+//            User user = gson.fromJson(s,User.class);
+
+
+            Log.d("MyHttpTask", "user:" + user);
+
+
+//            try {
+//                User user = new User();
+//                JSONObject jsonObject = new JSONObject(s);
+//                user.setStatus_code(jsonObject.getInt("status_code"));
+//                user.setStatus_msg(jsonObject.getString("status_msg"));
+//
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+
+
+        }
+    }
+
 }
