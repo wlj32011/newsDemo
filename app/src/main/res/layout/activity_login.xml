@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:id="@+id/activity_login"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="cn.boc.newsdemo.activity.LoginActivity">
+
+
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="100dp"
+        android:src="@mipmap/ic_launcher"/>
+
+
+    <EditText
+        android:id="@+id/phoneEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:background="@drawable/input_shape"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:hint="@string/please_type_phone"
+        android:layout_below="@id/logo"/>
+
+
+    <LinearLayout
+        android:id="@+id/codeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_below="@id/phoneEditText">
+
+        <EditText
+            android:id="@+id/codeEditText"
+            android:layout_width="0dp"
+            android:padding="10dp"
+            android:background="@drawable/input_shape"
+            android:layout_weight="1"
+            android:hint="@string/please_type_code"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/getCodeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:text="@string/send_msg_code"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:background="@drawable/button_selector"
+            />
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/loginButton"
+        android:layout_below="@id/codeLayout"
+        android:layout_width="match_parent"
+        android:textColor="@android:color/white"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_height="wrap_content"
+        android:background="@drawable/button_selector"
+        android:text="@string/login"/>
+
+
+
+
+</RelativeLayout>

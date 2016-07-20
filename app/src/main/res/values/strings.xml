@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">新闻客户端</string>
+    <string name="please_type_phone">请输入手机号</string>
+    <string name="send_msg_code">发送短信验证码</string>
+    <string name="login">登录</string>
+    <string name="please_type_code">请输入短信验证</string>
+</resources>
