@@ -2,6 +2,7 @@ package cn.boc.newsdemo.activity;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,19 +14,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
-import java.net.URLConnection;
 
+import cn.boc.newsdemo.MyApplication;
 import cn.boc.newsdemo.NewsApi;
 import cn.boc.newsdemo.R;
 import cn.boc.newsdemo.TimeCount;
@@ -35,8 +26,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import static cn.boc.newsdemo.R.string.login;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -53,8 +42,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     TimeCount timeCount;
 
 
-    public static final String LOGIN_URL = "http://192.168.43.116:3000/";
-
+    public static final String SERVERURL = "http://192.168.43.116:3000/";
 
 
     @Override
@@ -67,8 +55,28 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         getCodeButton = (Button) findViewById(R.id.getCodeButton);
         loginButton = (Button) findViewById(R.id.loginButton);
 
-        loginButton.setEnabled(false);
-        loginButton.setClickable(false);
+
+        MyApplication myApplication = (MyApplication) getApplication();
+
+        SharedPreferences sharedPreferences = myApplication.getSharedPreferences();
+
+
+        String username = sharedPreferences.getString("username","");
+
+        String password = sharedPreferences.getString("password","");
+
+
+        phoneEditText.setText(username);
+
+        codeEditText.setText(password);
+
+
+        if(phoneEditText.getText().length() != 11){
+            loginButton.setEnabled(false);
+            loginButton.setClickable(false);
+        }
+
+
 
         phoneEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -135,10 +143,24 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.loginButton:
-                MyHttpTask myHttpTask = new MyHttpTask();
+
                 String username = phoneEditText.getText().toString();
                 String password = codeEditText.getText().toString();
-//                myHttpTask.execute(LOGIN_URL,username,password);
+
+
+                MyApplication myApplication = (MyApplication) getApplication();
+
+                SharedPreferences sharedPreferences = myApplication.getSharedPreferences();
+
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString("username",username);
+                editor.putString("password",password);
+                editor.commit();
+
+
+
+//                MyHttpTask myHttpTask = new MyHttpTask();
+//                myHttpTask.execute(SERVERURL,username,password);
 
                 login(username,password);
 
@@ -159,7 +181,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private void login(String username,String password){
         Retrofit retrofit = new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create())
-                .baseUrl(LOGIN_URL).build();
+                .baseUrl(SERVERURL).build();
 
         NewsApi newsApi = retrofit.create(NewsApi.class);
 

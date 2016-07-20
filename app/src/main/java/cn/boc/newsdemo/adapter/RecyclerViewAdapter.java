@@ -5,11 +5,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.List;
 
+import cn.boc.newsdemo.News;
 import cn.boc.newsdemo.R;
+
+import static android.R.id.list;
 
 
 /**
@@ -20,11 +26,17 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
 
     private final Context context;
-    private final List<String> list;
+    private  News newsList;
 
-    public RecyclerViewAdapter(Context context, List<String> list) {
+    public RecyclerViewAdapter(Context context, News newsList) {
         this.context = context;
-        this.list = list;
+        this.newsList = newsList;
+    }
+
+
+    public void refreshData(News newsList){
+        this.newsList = newsList;
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -37,23 +49,34 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        String text = list.get(position);
-        holder.textView.setText(text);
+        News.DataEntity newsEntity = newsList.getData().get(position);
+//        holder.textView.setText(text);
+        holder.titleText.setText(newsEntity.getTitle());
+        holder.contentText.setText(newsEntity.getContent());
+
+        Glide.with(context).load(newsEntity.getImage_url())
+                .placeholder(R.mipmap.ic_launcher)
+                .crossFade()
+                .into(holder.imageView);
+
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return newsList.getData().size();
     }
 
 
     class MyViewHolder extends RecyclerView.ViewHolder{
 
-        TextView textView;
+        TextView titleText,contentText;
+        ImageView imageView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.text);
+            titleText = (TextView) itemView.findViewById(R.id.title);
+            imageView = (ImageView) itemView.findViewById(R.id.imageview);
+            contentText = (TextView) itemView.findViewById(R.id.content);
         }
     }
 
