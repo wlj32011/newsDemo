@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.webkit.WebView;
 
 import cn.boc.newsdemo.R;
 
@@ -17,6 +18,7 @@ public class StartActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+//            startActivity(new Intent(StartActivity.this,Html5Activity.class));
             startActivity(new Intent(StartActivity.this,LoginActivity.class));
             finish();
         }

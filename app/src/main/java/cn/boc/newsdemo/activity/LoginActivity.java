@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import java.io.IOException;
 
+import cn.boc.newsdemo.BuildConfig;
 import cn.boc.newsdemo.MyApplication;
 import cn.boc.newsdemo.NewsApi;
 import cn.boc.newsdemo.R;
@@ -54,6 +56,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         phoneEditText = (EditText) findViewById(R.id.phoneEditText);
         getCodeButton = (Button) findViewById(R.id.getCodeButton);
         loginButton = (Button) findViewById(R.id.loginButton);
+
+        if (BuildConfig.DEBUG) Log.d("LoginActivity", "test");
+
+        Toast.makeText(this, "test", Toast.LENGTH_SHORT).show();
+
+
+
 
 
         MyApplication myApplication = (MyApplication) getApplication();
@@ -162,7 +171,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 //                MyHttpTask myHttpTask = new MyHttpTask();
 //                myHttpTask.execute(SERVERURL,username,password);
 
-                login(username,password);
+//                login(username,password);
+
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
 
                 break;
             case R.id.getCodeButton:

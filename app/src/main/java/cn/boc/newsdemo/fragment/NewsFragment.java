@@ -1,5 +1,8 @@
 package cn.boc.newsdemo.fragment;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +24,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static cn.boc.newsdemo.R.id.news;
 
 /**
  * Created by wanglj on 16/7/20.
@@ -54,9 +59,12 @@ public class NewsFragment extends Fragment{
         getNewsList();
 
 
+
+
         return view;
 
     }
+
 
     private void getNewsList() {
 
@@ -73,6 +81,16 @@ public class NewsFragment extends Fragment{
             @Override
             public void onResponse(Call<News> call, Response<News> response) {
                 News news = response.body();
+
+
+
+
+
+//                db.execSQL("insert into news");
+
+
+
+
                 recyclerViewAdapter.refreshData(news);
             }
 
@@ -83,5 +101,36 @@ public class NewsFragment extends Fragment{
         });
 
 
+    }
+
+
+    /**
+     * 数据库操作
+     * @param news
+     */
+    private void operateDB(News news){
+        MySQLiteHelper mySQLiteHelper = new MySQLiteHelper(getActivity());
+        SQLiteDatabase db = mySQLiteHelper.getWritableDatabase();
+
+        for(News.DataEntity entity :news.getData()){
+            ContentValues cv = new ContentValues();
+            cv.put("id",entity.getId());
+            cv.put("title",entity.getTitle());
+            cv.put("content",entity.getContent());
+            db.insert("news",null,cv);
+        }
+
+
+        Cursor cursor = db.rawQuery("select * from news where id=?",new String[]{"1"});
+//        Cursor cursor = db.rawQuery("select * from news",null);
+
+
+        while (cursor.moveToNext()){
+
+            int id = cursor.getInt(cursor.getColumnIndex("id"));
+            String title = cursor.getString(cursor.getColumnIndex("title"));
+            String content = cursor.getString(cursor.getColumnIndex("content"));
+
+        }
     }
 }

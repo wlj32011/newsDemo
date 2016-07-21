@@ -7,6 +7,9 @@ package cn.boc.newsdemo;
 public class User {
 
 
+
+
+
     /**
      * status_code : 200
      * status_msg : 登录成功
